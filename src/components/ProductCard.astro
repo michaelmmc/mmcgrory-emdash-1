@@ -1,0 +1,92 @@
+---
+import type { MediaValue } from "emdash";
+import { Image } from "emdash/ui";
+
+interface Props {
+	title: string;
+	price?: string;
+	featuredImage?: MediaValue | string;
+	href: string;
+}
+
+const { title, price, featuredImage, href } = Astro.props;
+---
+
+<article class="product-card">
+	<a href={href} class="card-link">
+		<div class="card-image">
+			{
+				featuredImage ? (
+					<Image image={featuredImage} />
+				) : (
+					<div class="card-placeholder" />
+				)
+			}
+		</div>
+		<div class="card-body">
+			<h2 class="card-title">{title}</h2>
+			{price && <p class="card-price">{price}</p>}
+		</div>
+	</a>
+</article>
+
+<style>
+	.product-card {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.card-link {
+		display: block;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.card-image {
+		aspect-ratio: 1;
+		overflow: hidden;
+		border-radius: var(--radius-lg);
+		background: var(--color-surface);
+		margin-bottom: var(--spacing-3);
+	}
+
+	.card-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.3s ease;
+	}
+
+	.card-link:hover .card-image img {
+		transform: scale(1.04);
+	}
+
+	.card-placeholder {
+		aspect-ratio: 1;
+		border-radius: var(--radius-lg);
+		background: var(--color-surface);
+		margin-bottom: var(--spacing-3);
+	}
+
+	.card-body {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-1);
+	}
+
+	.card-title {
+		font-size: var(--font-size-base);
+		font-weight: 600;
+		line-height: var(--leading-snug);
+		transition: color var(--transition-fast);
+	}
+
+	.card-link:hover .card-title {
+		color: var(--color-accent);
+	}
+
+	.card-price {
+		font-size: var(--font-size-base);
+		color: var(--color-text-secondary);
+	}
+</style>

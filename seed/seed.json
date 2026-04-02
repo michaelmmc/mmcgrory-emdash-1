@@ -2,23 +2,58 @@
 	"$schema": "https://emdashcms.com/seed.schema.json",
 	"version": "1",
 	"meta": {
-		"name": "Blog Starter",
-		"description": "A blog with posts and pages",
-		"author": "EmDash"
+		"name": "Lucy's Bakery",
+		"description": "A bakery site with products, pages, and a contact form",
+		"author": "Lucy's Bakery"
 	},
 
 	"settings": {
-		"title": "My Blog",
-		"tagline": "Thoughts on building for the web"
+		"title": "Lucy's Bakery",
+		"tagline": "The Most Delicious Baked Goods You've Ever Had"
 	},
 
 	"collections": [
 		{
-			"slug": "posts",
-			"label": "Posts",
-			"labelSingular": "Post",
-			"supports": ["drafts", "revisions", "search", "seo"],
-			"commentsEnabled": true,
+			"slug": "products",
+			"label": "Products",
+			"labelSingular": "Product",
+			"supports": ["drafts", "revisions", "search"],
+			"fields": [
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true,
+					"searchable": true
+				},
+				{
+					"slug": "price",
+					"label": "Price",
+					"type": "string"
+				},
+				{
+					"slug": "featured_image",
+					"label": "Product Image",
+					"type": "image"
+				},
+				{
+					"slug": "description",
+					"label": "Short Description",
+					"type": "text",
+					"searchable": true
+				},
+				{
+					"slug": "detail_description",
+					"label": "Detail Description",
+					"type": "portableText"
+				}
+			]
+		},
+		{
+			"slug": "pages",
+			"label": "Pages",
+			"labelSingular": "Page",
+			"supports": ["drafts", "revisions", "search"],
 			"fields": [
 				{
 					"slug": "title",
@@ -37,76 +72,8 @@
 					"label": "Content",
 					"type": "portableText",
 					"searchable": true
-				},
-				{
-					"slug": "excerpt",
-					"label": "Excerpt",
-					"type": "text"
 				}
 			]
-		},
-		{
-			"slug": "pages",
-			"label": "Pages",
-			"labelSingular": "Page",
-			"supports": ["drafts", "revisions", "search"],
-			"fields": [
-				{
-					"slug": "title",
-					"label": "Title",
-					"type": "string",
-					"required": true,
-					"searchable": true
-				},
-				{
-					"slug": "content",
-					"label": "Content",
-					"type": "portableText",
-					"searchable": true
-				}
-			]
-		}
-	],
-
-	"taxonomies": [
-		{
-			"name": "category",
-			"label": "Categories",
-			"labelSingular": "Category",
-			"hierarchical": true,
-			"collections": ["posts"],
-			"terms": [
-				{ "slug": "development", "label": "Development" },
-				{ "slug": "design", "label": "Design" },
-				{ "slug": "notes", "label": "Notes" }
-			]
-		},
-		{
-			"name": "tag",
-			"label": "Tags",
-			"labelSingular": "Tag",
-			"hierarchical": false,
-			"collections": ["posts"],
-			"terms": [
-				{ "slug": "webdev", "label": "Web Development" },
-				{ "slug": "opinion", "label": "Opinion" },
-				{ "slug": "tools", "label": "Tools" },
-				{ "slug": "creativity", "label": "Creativity" }
-			]
-		}
-	],
-
-	"bylines": [
-		{
-			"id": "byline-editorial",
-			"slug": "emdash-editorial",
-			"displayName": "EmDash Editorial"
-		},
-		{
-			"id": "byline-guest",
-			"slug": "guest-contributor",
-			"displayName": "Guest Contributor",
-			"isGuest": true
 		}
 	],
 
@@ -115,54 +82,16 @@
 			"name": "primary",
 			"label": "Primary Navigation",
 			"items": [
-				{ "type": "custom", "label": "Home", "url": "/" },
 				{ "type": "custom", "label": "About", "url": "/pages/about" },
-				{ "type": "custom", "label": "Posts", "url": "/posts" }
+				{ "type": "custom", "label": "Shop", "url": "/shop" },
+				{ "type": "custom", "label": "Gallery", "url": "/pages/gallery" },
+				{ "type": "custom", "label": "Cakes & Tarts", "url": "/pages/cakes-tarts" },
+				{ "type": "custom", "label": "Contact", "url": "/pages/contact" }
 			]
 		}
 	],
 
 	"widgetAreas": [
-		{
-			"name": "sidebar",
-			"label": "Sidebar",
-			"description": "Widget area displayed on single post pages",
-			"widgets": [
-				{
-					"type": "component",
-					"componentId": "core:search",
-					"title": "Search"
-				},
-				{
-					"type": "component",
-					"componentId": "core:categories",
-					"title": "Categories"
-				},
-				{
-					"type": "component",
-					"componentId": "core:tags",
-					"title": "Tags"
-				},
-				{
-					"type": "component",
-					"componentId": "core:recent-posts",
-					"title": "Recent Posts",
-					"settings": {
-						"count": 5,
-						"showDate": true
-					}
-				},
-				{
-					"type": "component",
-					"componentId": "core:archives",
-					"title": "Archives",
-					"settings": {
-						"type": "monthly",
-						"limit": 6
-					}
-				}
-			]
-		},
 		{
 			"name": "footer",
 			"label": "Footer",
@@ -170,63 +99,28 @@
 			"widgets": [
 				{
 					"type": "content",
-					"title": "About",
+					"title": "Visit Us",
 					"content": [
 						{
 							"_type": "block",
 							"style": "normal",
 							"children": [
-								{
-									"_type": "span",
-									"text": "A blog about software, design, and the occasional stray thought."
-								}
+								{ "_type": "span", "text": "123 Example Rd, Scottsdale, AZ 85260" }
 							]
-						}
-					]
-				}
-			]
-		}
-	],
-
-	"sections": [
-		{
-			"slug": "newsletter-signup",
-			"title": "Newsletter Signup",
-			"description": "A call-to-action block for newsletter subscriptions",
-			"keywords": ["newsletter", "subscribe", "email", "cta"],
-			"source": "theme",
-			"content": [
-				{
-					"_type": "block",
-					"style": "h3",
-					"children": [{ "_type": "span", "text": "Stay in the loop" }]
-				},
-				{
-					"_type": "block",
-					"style": "normal",
-					"children": [
+						},
 						{
-							"_type": "span",
-							"text": "Get notified when new posts are published. No spam, unsubscribe anytime."
-						}
-					]
-				}
-			]
-		},
-		{
-			"slug": "about-author",
-			"title": "About the Author",
-			"description": "Brief author bio for use in posts or pages",
-			"keywords": ["author", "bio", "about"],
-			"source": "theme",
-			"content": [
-				{
-					"_type": "block",
-					"style": "normal",
-					"children": [
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{ "_type": "span", "text": "(555) 555-5555" }
+							]
+						},
 						{
-							"_type": "span",
-							"text": "A software developer who writes about building things on the web. Based somewhere with good coffee and reliable internet."
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{ "_type": "span", "text": "Mon–Fri: 7am–8pm · Sat: 8am–7pm" }
+							]
 						}
 					]
 				}
@@ -241,7 +135,14 @@
 				"slug": "about",
 				"status": "published",
 				"data": {
-					"title": "About",
+					"title": "Hi, I'm Lucy",
+					"featured_image": {
+						"$media": {
+							"url": "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/about-image-1.jpg",
+							"alt": "Lucy in her kitchen",
+							"filename": "about-image-1.jpg"
+						}
+					},
 					"content": [
 						{
 							"_type": "block",
@@ -249,7 +150,7 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "A place for writing about software, design, and the occasional stray thought. No posting schedule, no newsletter funnel. Just things I wanted to write down."
+									"text": "I have been baking for a long time, but that doesn't mean that you need a ton of experience to follow my recipes. I work to make my recipes interesting for advanced cooks but still accessible for beginners."
 								}
 							]
 						},
@@ -259,514 +160,572 @@
 							"children": [
 								{
 									"_type": "span",
-									"text": "Built with Astro and EmDash. The source is open if you want to see how it works."
+									"text": "I approach baking with an emphasis on family-friendly snacks and the tastiest ways to eat healthy together! When not in my kitchen, I'm often hiking in the mountains around my home and exploring the best food locations in America."
 								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Food has a special ability to bring people together. I often find this in my own life and I hope you will find that this online community feels just as welcoming as a real kitchen. For me, baking together builds the best communities, let's get baking together!"
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "gallery",
+				"slug": "gallery",
+				"status": "published",
+				"data": {
+					"title": "Gallery",
+					"featured_image": {
+						"$media": {
+							"url": "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/menu-image-3.jpg",
+							"alt": "Bakery gallery",
+							"filename": "menu-image-3.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [
+								{ "_type": "span", "text": "The Story of a Bakery" }
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"marks": ["strong"],
+									"text": "Bakery Café, established by Eugenia Theodosopoulos and Gilles Combes"
+								},
+								{
+									"_type": "span",
+									"text": " who met and married in Paris, is an elegant, casual dining experience—a place to eat well while talking with friends, meeting with colleagues, or celebrating with family. At Bakery, ingredients rule the kitchen and the cooking. Chef Eugenia starts by hand-selecting only the finest, freshest, quality ingredients—this essential beginning results in thoughtfully created and perfectly prepared organic dishes, pastries, and desserts. Unique and familiar flavors mingle in new ways and delight the palate."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"marks": ["strong"],
+									"text": "Buy local. Eat well. Preserve the Planet"
+								},
+								{
+									"_type": "span",
+									"text": "—three commitments that live in the hearts of Eugenia and Gilles and guide their mission. Environmental sustainability practices are infused in all facets of the bakery-café. Dishes and pastries require the freshest, organic-whenever-possible ingredients and are designed around local and in-season foods."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Bakery, especially known for its Parisian Macarons, won the \"Best of the internet\" award within its first nine months of operation—for both the macaron and the restaurant."
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "cakes-tarts",
+				"slug": "cakes-tarts",
+				"status": "published",
+				"data": {
+					"title": "Cakes & Tarts",
+					"featured_image": {
+						"$media": {
+							"url": "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/menu-image-1.jpg",
+							"alt": "Cakes and tarts",
+							"filename": "menu-image-1.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Our assortment of fresh-made cakes will make your mouth water. There's so much variety and each cake is completely unique and absolutely delicious. Come in, have a slice – or take the whole cake home. We also take special orders, get in touch to order a cake."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Occasion Cakes" }]
+						},
+						{
+							"_type": "block",
+							"style": "h3",
+							"children": [{ "_type": "span", "text": "Hazelnut Cake — $10" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Delicate, flourless hazelnut cake, completely gluten free – and tasty"
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h3",
+							"children": [{ "_type": "span", "text": "Orange Cake — $30" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Yellow cake with white frosting, topped with white cream"
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h3",
+							"children": [{ "_type": "span", "text": "Chocolate Cake — $10" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Decadence in chocolate form, exquisite dark chocolate in every form"
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h3",
+							"children": [{ "_type": "span", "text": "Chocolate Mousse — $30" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Chocolate layers of cake and mousse, covered in chocolate ganache"
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h3",
+							"children": [{ "_type": "span", "text": "Raspberry Cake — $20" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Yellow cake with white frosting, topped with fresh raspberries"
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h3",
+							"children": [{ "_type": "span", "text": "Lemon Pound — $20" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "A modern spin on an all time classic, topped with fresh lemon curd"
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h2",
+							"children": [{ "_type": "span", "text": "Fruit Tarts" }]
+						},
+						{
+							"_type": "block",
+							"style": "h3",
+							"children": [{ "_type": "span", "text": "Mixed Fruit — $30" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Tart shell, custard, strawberry, kiwi, blueberry, cherries, and apricot glaze"
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h3",
+							"children": [{ "_type": "span", "text": "Mango Raspberry — $30" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Tart shell, custard, mango, raspberry, cherries, and apricot glaze"
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h3",
+							"children": [{ "_type": "span", "text": "Kiwi Strawberry — $30" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Tart shell, custard, kiwi, strawberries, cherries, and apricot glaze"
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h3",
+							"children": [{ "_type": "span", "text": "Lemon Raspberry — $30" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Tart shell, custard, lemon, raspberry, cherries, and apricot glaze"
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"id": "contact",
+				"slug": "contact",
+				"status": "published",
+				"data": {
+					"title": "Contact",
+					"featured_image": {
+						"$media": {
+							"url": "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/contact-image-1.jpg",
+							"alt": "Bakery contact",
+							"filename": "contact-image-1.jpg"
+						}
+					},
+					"content": [
+						{
+							"_type": "block",
+							"style": "h3",
+							"children": [{ "_type": "span", "text": "Questions, Inquiries?" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{
+									"_type": "span",
+									"text": "Thank you for your inquiry about Lucy's Bakery, proudly setting the gold standard for bakeries in our community. Our guests rightfully expect the most delicious cakes around, baked with love and kindness."
+								}
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h3",
+							"children": [{ "_type": "span", "text": "Lucy's Bakery" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{ "_type": "span", "text": "123 Example Rd, Scottsdale, AZ 85260" }
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{ "_type": "span", "text": "Tel: (555) 555-5555" }
+							]
+						},
+						{
+							"_type": "block",
+							"style": "h3",
+							"children": [{ "_type": "span", "text": "Hours" }]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{ "_type": "span", "text": "Monday – Friday: 11am – 8pm" }
+							]
+						},
+						{
+							"_type": "block",
+							"style": "normal",
+							"children": [
+								{ "_type": "span", "text": "Saturday – Sunday: 11am – 10:30pm" }
 							]
 						}
 					]
 				}
 			}
 		],
-		"posts": [
+		"products": [
 			{
-				"id": "post-1",
-				"slug": "building-for-the-long-term",
+				"id": "product-one",
+				"slug": "product-one",
 				"status": "published",
 				"data": {
-					"title": "Building for the Long Term",
-					"excerpt": "The frameworks will change. The databases will change. What survives is the clarity of your thinking.",
+					"title": "Product One",
+					"price": "$9.99",
+					"description": "A classic baked good that never disappoints. Perfectly crafted with fresh, local ingredients.",
 					"featured_image": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200&h=800&fit=crop",
-							"alt": "Code on a monitor in a dark room",
-							"filename": "building-long-term.jpg"
+							"url": "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/product-image-1.jpg",
+							"alt": "Product One",
+							"filename": "product-image-1.jpg"
 						}
 					},
-					"content": [
+					"detail_description": [
 						{
 							"_type": "block",
 							"style": "normal",
 							"children": [
 								{
 									"_type": "span",
-									"text": "Every few years the industry collectively decides that everything we've been doing is wrong and there's a better way. New frameworks, new paradigms, new build tools. The churn is relentless, and if you're not careful, you spend more time migrating than building."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "I've been writing software long enough to have seen several of these cycles. jQuery to Backbone to Angular to React to whatever comes next. Each transition felt urgent at the time. Looking back, the things that actually mattered were rarely about the framework."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "What survives" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Clean data models survive. Clear boundaries between systems survive. Good naming survives. The decision to keep things simple when you could have made them clever - that definitely survives."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "What doesn't survive is code that was written to impress, abstractions built for problems that never materialized, and architectures designed around a framework's opinions rather than the domain's reality."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "The best code I've written is boring. It reads like prose, does one thing well, and doesn't require a PhD in category theory to understand. The worst code I've written was technically impressive at the time."
+									"text": "Your product page needs to address any potential concerns or hesitations your potential buyer might have. Find creative ways to provide as much information as possible to properly inform the shopper without overwhelming them with words."
 								}
 							]
 						}
 					]
-				},
-				"bylines": [
-					{ "byline": "byline-editorial" },
-					{ "byline": "byline-guest", "roleLabel": "Guest essay" }
-				],
-				"taxonomies": {
-					"category": ["development"],
-					"tag": ["opinion"]
 				}
 			},
 			{
-				"id": "post-2",
-				"slug": "the-case-for-static",
+				"id": "product-two",
+				"slug": "product-two",
 				"status": "published",
 				"data": {
-					"title": "The Case for Static",
-					"excerpt": "Static sites aren't a step backwards. They're what you get when you take performance and simplicity seriously.",
+					"title": "Product Two",
+					"price": "$4.99",
+					"description": "Our most affordable treat. Great for sharing with friends and family.",
 					"featured_image": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&h=800&fit=crop",
-							"alt": "Laptop and coffee on a wooden table",
-							"filename": "case-for-static.jpg"
+							"url": "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/product-image-2.jpg",
+							"alt": "Product Two",
+							"filename": "product-image-2.jpg"
 						}
 					},
-					"content": [
+					"detail_description": [
 						{
 							"_type": "block",
 							"style": "normal",
 							"children": [
 								{
 									"_type": "span",
-									"text": "There's a certain irony in the fact that the web started static, went dynamic, and is now swinging back toward static again. But the static sites of today aren't the hand-coded HTML pages of 1998. They're generated, optimized, and deployed to edge networks that serve them in milliseconds."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "The pitch for server-rendered everything was compelling: dynamic content, personalization, real-time data. But most sites don't need most of that most of the time. A blog post doesn't need to be rendered on every request. A product page doesn't change every second."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "The performance argument" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "A static file served from a CDN is as fast as the web gets. No cold starts, no database queries, no server-side rendering overhead. The Time to First Byte is essentially the network latency to your nearest edge node. You can't beat physics."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "And when you do need dynamic behavior, you can add it surgically. An island of interactivity in a sea of static HTML. The best of both worlds, without paying the cost of either at all times."
+									"text": "Your product page needs to address any potential concerns or hesitations your potential buyer might have. Find creative ways to provide as much information as possible to properly inform the shopper without overwhelming them with words."
 								}
 							]
 						}
 					]
-				},
-				"bylines": [{ "byline": "byline-editorial" }],
-				"taxonomies": {
-					"category": ["development"],
-					"tag": ["webdev", "opinion"]
 				}
 			},
 			{
-				"id": "post-3",
-				"slug": "learning-in-public",
+				"id": "product-three",
+				"slug": "product-three",
 				"status": "published",
 				"data": {
-					"title": "Learning in Public",
-					"excerpt": "Writing about what you're learning is the fastest way to find out what you don't actually understand.",
+					"title": "Product Three",
+					"price": "$14.99",
+					"description": "Our premium selection. Rich flavors and artisan craftsmanship in every bite.",
 					"featured_image": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=1200&h=800&fit=crop",
-							"alt": "Notebook and pen on a desk",
-							"filename": "learning-in-public.jpg"
+							"url": "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/product-image-3.jpg",
+							"alt": "Product Three",
+							"filename": "product-image-3.jpg"
 						}
 					},
-					"content": [
+					"detail_description": [
 						{
 							"_type": "block",
 							"style": "normal",
 							"children": [
 								{
 									"_type": "span",
-									"text": "I started writing about things I was learning not because I had anything original to say, but because I kept forgetting what I'd figured out. The blog posts were notes to my future self, published publicly more out of laziness than courage."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "What I didn't expect was how much the writing itself would accelerate the learning. There's a particular kind of clarity that comes from trying to explain something to someone else. The gaps in your understanding, which you can happily ignore when the knowledge lives only in your head, become painfully obvious when you try to put it into sentences."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "The fear of being wrong" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "The biggest barrier isn't time or writing skill. It's the fear of publishing something that turns out to be wrong. But here's the thing: being wrong publicly is one of the most efficient ways to learn. Someone will correct you, often kindly, and you'll remember that correction forever."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "The posts that helped me most weren't written by experts. They were written by people one step ahead of me on the same path, in language that hadn't yet been polished into abstraction. There's a place for that kind of writing, and it's more valuable than most people realize."
+									"text": "Your product page needs to address any potential concerns or hesitations your potential buyer might have. Find creative ways to provide as much information as possible to properly inform the shopper without overwhelming them with words."
 								}
 							]
 						}
 					]
-				},
-				"taxonomies": {
-					"category": ["notes"],
-					"tag": ["opinion"]
 				}
 			},
 			{
-				"id": "post-4",
-				"slug": "small-tools-big-impact",
+				"id": "product-four",
+				"slug": "product-four",
 				"status": "published",
 				"data": {
-					"title": "Small Tools, Big Impact",
-					"excerpt": "The best developer tools do one thing well and get out of your way. A love letter to focused software.",
+					"title": "Product Four",
+					"price": "$9.99",
+					"description": "A bakery favorite loved by all our customers. Fresh-baked daily.",
 					"featured_image": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1575026615908-666710ae5e47?w=1200&h=800&fit=crop",
-							"alt": "Wrenches and hand tools hanging on a workshop wall",
-							"filename": "small-tools.jpg"
+							"url": "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/product-image-4.jpg",
+							"alt": "Product Four",
+							"filename": "product-image-4.jpg"
 						}
 					},
-					"content": [
+					"detail_description": [
 						{
 							"_type": "block",
 							"style": "normal",
 							"children": [
 								{
 									"_type": "span",
-									"text": "There's a class of software that doesn't get enough appreciation. Not the frameworks or the platforms or the IDEs, but the small, sharp tools that solve one problem so well you stop thinking about them. They become invisible, which is the highest compliment you can pay a tool."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "I'm talking about things like ripgrep, which searches code so fast it changed how I think about searching. Or jq, which makes JSON feel like a first-class data format in the terminal. Or curl, which has been quietly powering the internet's plumbing for decades."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "The Unix philosophy, revisited" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Do one thing well. The advice is old enough to be a cliche, but the best modern tools still follow it. They don't try to be platforms. They don't have plugin ecosystems or configuration languages or startup wizards. They do their job and they compose with other tools that do theirs."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "The temptation is always to add more. One more feature, one more option, one more integration. But every addition is a decision someone has to make, a path through the code that has to be maintained, a thing that can break. The best tools resist this. They stay small, and in staying small, they stay reliable."
+									"text": "Your product page needs to address any potential concerns or hesitations your potential buyer might have. Find creative ways to provide as much information as possible to properly inform the shopper without overwhelming them with words."
 								}
 							]
 						}
 					]
-				},
-				"taxonomies": {
-					"category": ["development"],
-					"tag": ["tools"]
 				}
 			},
 			{
-				"id": "post-5",
-				"slug": "designing-with-constraints",
+				"id": "product-five",
+				"slug": "product-five",
 				"status": "published",
 				"data": {
-					"title": "Designing with Constraints",
-					"excerpt": "Limitations aren't obstacles to creativity. They're the structure that makes creativity possible.",
+					"title": "Product Five",
+					"price": "$9.99",
+					"description": "Find creative ways to provide as much information as possible to properly inform the shopper without overwhelming them with words.",
 					"featured_image": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?w=1200&h=800&fit=crop",
-							"alt": "Pencils and design tools on a desk",
-							"filename": "designing-with-constraints.jpg"
+							"url": "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/product-image-5.jpg",
+							"alt": "Product Five",
+							"filename": "product-image-5.jpg"
 						}
 					},
-					"content": [
+					"detail_description": [
 						{
 							"_type": "block",
 							"style": "normal",
 							"children": [
 								{
 									"_type": "span",
-									"text": "Give a designer a blank canvas and unlimited time, and they'll often produce something mediocre. Give them a tight brief, a small screen, and a deadline, and they'll surprise you. This isn't a paradox - it's how creativity actually works."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Constraints force decisions. When you can't use more than two typefaces, you have to choose carefully. When the page has to load in under a second, every element earns its place. When the interface has to work on a 320px screen, you discover what's truly essential."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Embracing the box" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "The web itself is a constraint. HTML flows in one direction. CSS has a box model. Browsers have viewport sizes and font rendering quirks. You can fight these constraints or you can work with them, and the results are dramatically different."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "The designs I admire most don't look like they were forced through a framework. They look like they grew naturally from the medium, respecting its grain rather than working against it. That only happens when you treat constraints as creative partners rather than enemies."
+									"text": "Your product page needs to address any potential concerns or hesitations your potential buyer might have. Find creative ways to provide as much information as possible to properly inform the shopper without overwhelming them with words."
 								}
 							]
 						}
 					]
-				},
-				"taxonomies": {
-					"category": ["design"],
-					"tag": ["creativity"]
 				}
 			},
 			{
-				"id": "post-6",
-				"slug": "a-weekend-with-a-side-project",
+				"id": "product-six",
+				"slug": "product-six",
 				"status": "published",
 				"data": {
-					"title": "A Weekend with a Side Project",
-					"excerpt": "No stakeholders, no deadlines, no Jira tickets. Just you and a dumb idea that might turn into something.",
+					"title": "Product Six",
+					"price": "$9.99",
+					"description": "Seasonal flavors captured in our signature style. Light, fluffy, and delicious.",
 					"featured_image": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=1200&h=800&fit=crop",
-							"alt": "Code on a screen with a dark theme",
-							"filename": "weekend-side-project.jpg"
+							"url": "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/product-image-6.jpg",
+							"alt": "Product Six",
+							"filename": "product-image-6.jpg"
 						}
 					},
-					"content": [
+					"detail_description": [
 						{
 							"_type": "block",
 							"style": "normal",
 							"children": [
 								{
 									"_type": "span",
-									"text": "Saturday morning. Coffee's made, the house is quiet, and I've got an idea that's been nagging at me all week. Not a good idea, necessarily - just a persistent one. A small tool that does a thing I keep doing manually. How hard could it be?"
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "This is the best kind of programming. No requirements document, no sprint planning, no pull request reviews. Just a text editor and a problem. The freedom to make terrible architectural decisions, rewrite everything twice, and follow tangents that turn out to be dead ends."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Why side projects matter" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Side projects are where you learn things your day job would never teach you. Not because the problems are harder, but because you're free to take risks. Try a language you've never used. Build something without a framework. Deploy to a platform you've only read about. The stakes are zero, which makes the learning maximum."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "By Sunday evening, the thing sort of works. It's rough, the error handling is nonexistent, and the README is a single sentence. But it solves the problem I set out to solve, and I learned three things I didn't know on Friday. Not a bad weekend."
+									"text": "Your product page needs to address any potential concerns or hesitations your potential buyer might have. Find creative ways to provide as much information as possible to properly inform the shopper without overwhelming them with words."
 								}
 							]
 						}
 					]
-				},
-				"taxonomies": {
-					"category": ["development"],
-					"tag": ["creativity"]
 				}
 			},
 			{
-				"id": "post-7",
-				"slug": "notes-on-simplicity",
+				"id": "product-seven",
+				"slug": "product-seven",
 				"status": "published",
 				"data": {
-					"title": "Notes on Simplicity",
-					"excerpt": "Simplicity isn't the absence of complexity. It's the result of understanding a problem well enough to solve it cleanly.",
+					"title": "Product Seven",
+					"price": "$9.99",
+					"description": "Handcrafted with care from our family recipe. A taste of home in every bite.",
 					"featured_image": {
 						"$media": {
-							"url": "https://images.unsplash.com/photo-1559051668-e1fa58f25786?w=1200&h=800&fit=crop",
-							"alt": "Geometric pattern carved into white paper",
-							"filename": "notes-on-simplicity.jpg"
+							"url": "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/product-image-7.jpg",
+							"alt": "Product Seven",
+							"filename": "product-image-7.jpg"
 						}
 					},
-					"content": [
+					"detail_description": [
 						{
 							"_type": "block",
 							"style": "normal",
 							"children": [
 								{
 									"_type": "span",
-									"text": "Every piece of software starts simple. A few files, a clear purpose, a small surface area. Then features get added, edge cases get handled, and before long you're looking at something that requires a diagram to understand. This isn't inevitable, but it takes discipline to prevent."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "The hard part of simplicity isn't the initial design. It's the ongoing resistance to complication. Every feature request, every bug fix, every refactor is an opportunity to add complexity. Saying no is the most important design skill, and the least celebrated."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "h2",
-							"children": [{ "_type": "span", "text": "Removing as a feature" }]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "The best version of a product often has fewer features than the previous one. Not because features were missing, but because someone had the courage to remove things that weren't earning their keep. Every feature has a cost - in maintenance, in cognitive load, in the weight of the interface."
-								}
-							]
-						},
-						{
-							"_type": "block",
-							"style": "normal",
-							"children": [
-								{
-									"_type": "span",
-									"text": "Simplicity is a practice, not a destination. You never arrive at simple. You just keep asking: is this necessary? Could this be clearer? Is there a way to solve this problem by removing something instead of adding something? The answer is yes more often than you'd expect."
+									"text": "Your product page needs to address any potential concerns or hesitations your potential buyer might have. Find creative ways to provide as much information as possible to properly inform the shopper without overwhelming them with words."
 								}
 							]
 						}
 					]
-				},
-				"taxonomies": {
-					"category": ["notes"],
-					"tag": ["opinion"]
 				}
 			},
 			{
-				"id": "post-draft",
-				"slug": "work-in-progress",
-				"status": "draft",
+				"id": "product-eight",
+				"slug": "product-eight",
+				"status": "published",
 				"data": {
-					"title": "Work in Progress",
-					"excerpt": "This post is still being written.",
-					"content": [
+					"title": "Product Eight",
+					"price": "$9.99",
+					"description": "Our newest addition to the menu. Bold flavors that will keep you coming back for more.",
+					"featured_image": {
+						"$media": {
+							"url": "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/product-image-8.jpg",
+							"alt": "Product Eight",
+							"filename": "product-image-8.jpg"
+						}
+					},
+					"detail_description": [
 						{
 							"_type": "block",
 							"style": "normal",
 							"children": [
 								{
 									"_type": "span",
-									"text": "This is a draft post that won't appear in the public listing."
+									"text": "Your product page needs to address any potential concerns or hesitations your potential buyer might have. Find creative ways to provide as much information as possible to properly inform the shopper without overwhelming them with words."
 								}
 							]
 						}

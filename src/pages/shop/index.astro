@@ -1,0 +1,172 @@
+---
+import { getEmDashCollection } from "emdash";
+import { Image } from "emdash/ui";
+import Base from "../../layouts/Base.astro";
+
+const { entries: products, cacheHint } = await getEmDashCollection("products");
+
+Astro.cache.set(cacheHint);
+---
+
+<Base title="Shop" description="Browse our selection of fresh-baked goods">
+	<div class="shop-page">
+		<header class="shop-header">
+			<h1 class="shop-title">Shop</h1>
+			<p class="shop-count">
+				{products.length > 0 ? `${products.length} products` : ""}
+			</p>
+		</header>
+
+		{
+			products.length === 0 ? (
+				<div class="empty-state">
+					<p>No products yet.</p>
+					<a href="/_emdash/admin/content/products/new" class="btn">
+						Add a product
+					</a>
+				</div>
+			) : (
+				<div class="shop-grid">
+					{products.map((product) => (
+						<article class="product-card">
+							<a href={`/shop/${product.id}`} class="card-link">
+								<div class="card-image">
+									{product.data.featured_image ? (
+										<Image image={product.data.featured_image} />
+									) : (
+										<div class="card-placeholder" />
+									)}
+								</div>
+								<div class="card-body">
+									<h2 class="card-title">{product.data.title}</h2>
+									{product.data.price && (
+										<p class="card-price">{product.data.price}</p>
+									)}
+								</div>
+							</a>
+						</article>
+					))}
+				</div>
+			)
+		}
+	</div>
+</Base>
+
+<style>
+	.shop-page {
+		max-width: var(--wide-width);
+		margin: 0 auto;
+		padding: var(--spacing-12) var(--spacing-6) var(--spacing-16);
+	}
+
+	.shop-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		margin-bottom: var(--spacing-10);
+		padding-bottom: var(--spacing-4);
+		border-bottom: 1px solid var(--color-border-subtle);
+	}
+
+	.shop-title {
+		font-size: var(--font-size-3xl);
+		font-weight: 700;
+		letter-spacing: var(--tracking-tight);
+	}
+
+	.shop-count {
+		font-size: var(--font-size-sm);
+		color: var(--color-muted);
+	}
+
+	.shop-grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: var(--spacing-8) var(--spacing-6);
+	}
+
+	.product-card {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.card-link {
+		display: block;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.card-image {
+		aspect-ratio: 1;
+		overflow: hidden;
+		border-radius: var(--radius-lg);
+		background: var(--color-surface);
+		margin-bottom: var(--spacing-3);
+	}
+
+	.card-image img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.3s ease;
+	}
+
+	.card-link:hover .card-image img {
+		transform: scale(1.04);
+	}
+
+	.card-placeholder {
+		width: 100%;
+		aspect-ratio: 1;
+		background: var(--color-surface);
+		border-radius: var(--radius-lg);
+	}
+
+	.card-title {
+		font-size: var(--font-size-base);
+		font-weight: 600;
+		line-height: var(--leading-snug);
+		margin-bottom: var(--spacing-1);
+		transition: color var(--transition-fast);
+	}
+
+	.card-link:hover .card-title {
+		color: var(--color-accent);
+	}
+
+	.card-price {
+		font-size: var(--font-size-base);
+		color: var(--color-text-secondary);
+	}
+
+	.empty-state {
+		text-align: center;
+		padding: var(--spacing-20) 0;
+		color: var(--color-muted);
+	}
+
+	.btn {
+		display: inline-block;
+		margin-top: var(--spacing-4);
+		padding: var(--spacing-3) var(--spacing-6);
+		background: var(--color-accent);
+		color: var(--color-on-accent);
+		text-decoration: none;
+		border-radius: var(--radius);
+		font-size: var(--font-size-sm);
+		font-weight: 500;
+	}
+
+	@media (max-width: 900px) {
+		.shop-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
+	@media (max-width: 640px) {
+		.shop-grid {
+			grid-template-columns: repeat(2, 1fr);
+			gap: var(--spacing-6) var(--spacing-4);
+		}
+	}
+</style>

@@ -1,6 +1,6 @@
 ---
 import { getEmDashEntry } from "emdash";
-import { PortableText } from "emdash/ui";
+import { Image, PortableText } from "emdash/ui";
 import Base from "../../layouts/Base.astro";
 
 const { slug } = Astro.params;
@@ -22,6 +22,14 @@ Astro.cache.set(cacheHint);
 	title={page.data.title}
 	content={{ collection: "pages", id: page.data.id, slug }}
 >
+	{
+		page.data.featured_image && (
+			<div class="page-hero">
+				<Image image={page.data.featured_image} />
+			</div>
+		)
+	}
+
 	<article class="page-article">
 		<header class="page-header">
 			<h1 class="page-title" {...page.edit.title}>{page.data.title}</h1>
@@ -34,10 +42,23 @@ Astro.cache.set(cacheHint);
 </Base>
 
 <style>
+	.page-hero {
+		width: 100%;
+		max-height: 420px;
+		overflow: hidden;
+	}
+
+	.page-hero img {
+		width: 100%;
+		max-height: 420px;
+		object-fit: cover;
+		display: block;
+	}
+
 	.page-article {
 		max-width: var(--max-width);
 		margin: 0 auto;
-		padding: var(--spacing-16) var(--spacing-6) var(--spacing-16);
+		padding: var(--spacing-12) var(--spacing-6) var(--spacing-16);
 	}
 
 	.page-header {
@@ -73,29 +94,6 @@ Astro.cache.set(cacheHint);
 		color: var(--color-muted);
 	}
 
-	.page-content :global(pre) {
-		margin: 1.5em 0;
-		padding: var(--spacing-4);
-		background: var(--color-surface);
-		border-radius: var(--radius);
-		overflow-x: auto;
-		font-family: var(--font-mono);
-		font-size: var(--font-size-sm);
-	}
-
-	.page-content :global(code) {
-		font-family: var(--font-mono);
-		font-size: 0.9em;
-		background: var(--color-surface);
-		padding: 0.15em 0.3em;
-		border-radius: var(--radius);
-	}
-
-	.page-content :global(pre code) {
-		background: none;
-		padding: 0;
-	}
-
 	.page-content :global(ul),
 	.page-content :global(ol) {
 		margin-bottom: 1.5em;
@@ -104,5 +102,10 @@ Astro.cache.set(cacheHint);
 
 	.page-content :global(li) {
 		margin-bottom: 0.5em;
+	}
+
+	.page-content :global(strong) {
+		font-weight: 600;
+		color: var(--color-text);
 	}
 </style>

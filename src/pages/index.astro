@@ -1,391 +1,202 @@
 ---
-import { getEmDashCollection, getEntryTerms } from "emdash";
+import { getEmDashCollection } from "emdash";
 import { Image } from "emdash/ui";
 import Base from "../layouts/Base.astro";
-import PostCard from "../components/PostCard.astro";
-import { getReadingTime } from "../utils/reading-time";
+import ProductCard from "../components/ProductCard.astro";
 
-const { entries: posts, cacheHint } = await getEmDashCollection("posts");
+const { entries: products, cacheHint } = await getEmDashCollection("products");
 
 Astro.cache.set(cacheHint);
 
-const sortedPosts = posts.toSorted((a, b) => {
-	const dateA = a.data.publishedAt?.getTime() ?? 0;
-	const dateB = b.data.publishedAt?.getTime() ?? 0;
-	return dateB - dateA;
-});
+// Gallery images seeded into R2 from source URLs
+const galleryImages = [
+	{ src: "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/menu-image-3.jpg", alt: "Bakery selection" },
+	{ src: "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/menu-image-2.jpg", alt: "Fresh pastries" },
+	{ src: "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/menu-image-1.jpg", alt: "Cakes display" },
+	{ src: "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/about-image-5.jpg", alt: "Baking in progress" },
+	{ src: "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/contact-image-1.jpg", alt: "Bakery storefront" },
+	{ src: "https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/about-image-3.jpg", alt: "Artisan baked goods" },
+];
 
-// Find the first post with a featured image for the hero
-const featuredPost = sortedPosts.find((p) => p.data.featured_image);
-const featuredIndex = featuredPost ? sortedPosts.indexOf(featuredPost) : -1;
-
-// Get remaining posts (exclude featured if found, limit to 6 for grid)
-const gridPosts = sortedPosts.filter((_, i) => i !== featuredIndex).slice(0, 6);
-
-// Total posts shown = featured (if any) + grid posts
-const totalShown = (featuredPost ? 1 : 0) + gridPosts.length;
-const hasMorePosts = sortedPosts.length > totalShown;
-
-// Fetch tags for featured post (bylines are already hydrated by getEmDashCollection)
-let featuredTags: Array<{ slug: string; label: string }> = [];
-const featuredBylines = featuredPost?.data.bylines ?? [];
-if (featuredPost) {
-	const tags = await getEntryTerms("posts", featuredPost.data.id, "tag");
-	featuredTags = tags.map((t) => ({ slug: t.slug, label: t.label }));
-}
-
-// Fetch tags for grid posts (bylines are already hydrated by getEmDashCollection)
-const gridPostsWithTags = await Promise.all(
-	gridPosts.map(async (post) => {
-		const tags = await getEntryTerms("posts", post.data.id, "tag");
-		const bylines = post.data.bylines ?? [];
-		return {
-			post,
-			tags: tags.map((t) => ({ slug: t.slug, label: t.label })),
-			bylines,
-		};
-	})
-);
-
-// Format date helper
-function formatDate(date: Date | null | undefined) {
-	if (!date) return null;
-	return date.toLocaleDateString("en-US", {
-		year: "numeric",
-		month: "long",
-		day: "numeric",
-	});
-}
+// Featured product spotlight
+const spotlightProduct = products.find((p) => p.id === "product-five");
 ---
 
-<Base title="My Blog" description="Welcome to my blog">
-	{
-		posts.length === 0 ? (
-			<section class="empty-state">
-				<h2>No posts yet</h2>
-				<p>Create your first post in the admin panel.</p>
-				<a href="/_emdash/admin/content/posts/new" class="btn">
-					Create a post
-				</a>
-			</section>
-		) : (
-			<div class="home-content">
-				{/* Featured Post - Side by side */}
-				{featuredPost && (
-					<section class="featured-section">
-						<div class="featured-grid">
-							<a href={`/posts/${featuredPost.id}`} class="featured-image-link">
-								<div class="featured-image">
-									<Image image={featuredPost.data.featured_image} />
-								</div>
-							</a>
-							<div class="featured-content">
-								<div class="featured-meta">
-									{featuredBylines.length > 0 && (
-										<>
-											<div class="featured-bylines">
-												{featuredBylines.slice(0, 2).map((credit, index) => (
-													<>
-														{index > 0 && <span class="byline-sep">,</span>}
-														<span class="featured-byline">
-															{credit.byline.avatarMediaId && (
-																<img
-																	src={`/_emdash/api/media/file/${credit.byline.avatarMediaId}`}
-																	alt={credit.byline.displayName}
-																	class="featured-byline-avatar"
-																/>
-															)}
-															<span class="featured-byline-name">
-																{credit.byline.displayName}
-															</span>
-														</span>
-													</>
-												))}
-												{featuredBylines.length > 2 && (
-													<span class="byline-more">
-														+{featuredBylines.length - 2}
-													</span>
-												)}
-											</div>
-											<span class="meta-dot" />
-										</>
-									)}
-									{formatDate(featuredPost.data.publishedAt) && (
-										<time>{formatDate(featuredPost.data.publishedAt)}</time>
-									)}
-									<span class="meta-dot" />
-									<span>
-										{getReadingTime(featuredPost.data.content)} min read
-									</span>
-								</div>
-								<a
-									href={`/posts/${featuredPost.id}`}
-									class="featured-title-link"
-								>
-									<h1 class="featured-title">{featuredPost.data.title}</h1>
-								</a>
-								{featuredPost.data.excerpt && (
-									<p class="featured-excerpt">{featuredPost.data.excerpt}</p>
-								)}
-								{featuredTags.length > 0 && (
-									<div class="featured-tags">
-										{featuredTags.map((tag) => (
-											<a href={`/tag/${tag.slug}`} class="featured-tag">
-												{tag.label}
-											</a>
-										))}
-									</div>
-								)}
-							</div>
-						</div>
-					</section>
-				)}
+<Base title="Lucy's Bakery" description="The Most Delicious Baked Goods You've Ever Had">
+	<!-- Hero -->
+	<section class="hero">
+		<div class="hero-inner">
+			<h1 class="hero-title">The Most Delicious<br />Baked Goods<br />You've Ever Had</h1>
+			<a href="/shop" class="hero-cta">Shop Baked Goods</a>
+		</div>
+	</section>
 
-				{/* Latest Posts */}
-				{gridPostsWithTags.length > 0 && (
-					<section class="posts-section">
-						<header class="section-header">
-							<h2 class="section-title">Latest</h2>
-							{hasMorePosts && (
-								<a href="/posts" class="section-link">
-									View all
-								</a>
-							)}
-						</header>
-						<div class="posts-grid">
-							{gridPostsWithTags.map(({ post, tags, bylines }) => (
-								<PostCard
-									title={post.data.title ?? "Untitled"}
-									excerpt={post.data.excerpt}
-									featuredImage={post.data.featured_image}
-									href={`/posts/${post.id}`}
-									date={post.data.publishedAt ?? undefined}
-									readingTime={getReadingTime(post.data.content)}
-									tags={tags}
-									bylines={bylines}
-								/>
-							))}
-						</div>
-					</section>
-				)}
+	<!-- Product Grid -->
+	<section class="products-section">
+		<div class="products-inner">
+			{
+				products.length === 0 ? (
+					<div class="empty-state">
+						<p>No products yet. Add products in the admin panel.</p>
+						<a href="/_emdash/admin/content/products/new" class="btn">Add a product</a>
+					</div>
+				) : (
+					<div class="products-grid">
+						{products.map((product) => (
+							<ProductCard
+								title={product.data.title ?? "Untitled"}
+								price={product.data.price ?? ""}
+								featuredImage={product.data.featured_image}
+								href={`/shop/${product.id}`}
+							/>
+						))}
+					</div>
+				)
+			}
+		</div>
+	</section>
+
+	<!-- Feature Blurbs -->
+	<section class="features-section">
+		<div class="features-inner">
+			<div class="features-image">
+				<img
+					src="https://v7s.f09.myftpupload.com/wp-content/uploads/2023/02/home-image-4.jpg"
+					alt="Freshly baked goods"
+					loading="lazy"
+				/>
 			</div>
+			<div class="features-text">
+				<div class="feature">
+					<h3 class="feature-title">Homemade</h3>
+					<p>I approach baking with an emphasis on family-friendly snacks and the tastiest ways to eat healthy! When not in my kitchen, I'm often hiking in the mountains around my home and exploring the best food spots.</p>
+				</div>
+				<div class="feature">
+					<h3 class="feature-title">Food + People</h3>
+					<p>Food has a special ability to bring people together. I hope you will find that this online community feels just as welcoming as a real kitchen. For me, baking together builds the best communities, let's get baking!</p>
+				</div>
+				<div class="feature">
+					<h3 class="feature-title">Homegrown</h3>
+					<p>I have been baking for a long time, but that doesn't mean that you need a ton of experience to follow my recipes. I work to make my recipes interesting for advanced bakers but still accessible for beginners.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Info Bar -->
+	<section class="info-section">
+		<div class="info-inner">
+			<div class="info-address">
+				<h4>Lucy's Bakery</h4>
+				<p>123 Example Rd, Scottsdale, AZ 85260</p>
+				<p>(555) 555-5555</p>
+			</div>
+			<div class="info-hours">
+				<h4>Our Hours</h4>
+				<p>Monday – Friday: 7am – 8pm</p>
+				<p>Saturday: 8am – 7pm</p>
+			</div>
+			<blockquote class="info-quote">
+				<p>The best bakery in town</p>
+			</blockquote>
+		</div>
+	</section>
+
+	<!-- Gallery -->
+	<section class="gallery-section">
+		<div class="gallery-grid">
+			{galleryImages.map((img) => (
+				<div class="gallery-item">
+					<img src={img.src} alt={img.alt} loading="lazy" />
+				</div>
+			))}
+		</div>
+	</section>
+
+	<!-- Product Spotlight -->
+	{
+		spotlightProduct && (
+			<section class="spotlight-section">
+				<div class="spotlight-inner">
+					<div class="spotlight-image">
+						<Image image={spotlightProduct.data.featured_image} />
+					</div>
+					<div class="spotlight-content">
+						<h2 class="spotlight-title">{spotlightProduct.data.title}</h2>
+						<p class="spotlight-description">{spotlightProduct.data.description}</p>
+						<p class="spotlight-price">{spotlightProduct.data.price}</p>
+						<a href={`/shop/${spotlightProduct.id}`} class="spotlight-cta">
+							Shop now
+						</a>
+					</div>
+				</div>
+			</section>
 		)
 	}
 </Base>
 
 <style>
-	.home-content {
+	/* ── Hero ── */
+	.hero {
+		background: var(--color-bg-subtle);
+		border-bottom: 1px solid var(--color-border-subtle);
+		padding: var(--spacing-24) var(--spacing-6);
+		text-align: center;
+	}
+
+	.hero-inner {
 		max-width: var(--wide-width);
 		margin: 0 auto;
-		padding: var(--spacing-16) var(--spacing-6);
-	}
-
-	/* Featured Section - Side by side */
-	.featured-section {
-		margin-bottom: var(--spacing-16);
-	}
-
-	.featured-grid {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: var(--spacing-8);
-		align-items: center;
-	}
-
-	.featured-image-link {
-		grid-column: 1 / 3;
-		display: block;
-		/* Extend to viewport edge, but cap at -6rem minimum extension */
-		margin-left: min(
-			-6rem,
-			calc(-1 * (var(--spacing-6) + (100vw - var(--wide-width)) / 2))
-		);
-	}
-
-	.featured-image {
-		overflow: hidden;
-		border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
-		background: var(--color-surface);
-	}
-
-	.featured-image img {
-		width: 100%;
-		height: auto;
-		aspect-ratio: 4 / 3;
-		object-fit: cover;
-		transition: transform 0.4s ease;
-	}
-
-	.featured-image-link:hover .featured-image img,
-	.featured-grid:has(.featured-title-link:hover) .featured-image img {
-		transform: scale(1.02);
-	}
-
-	.featured-content {
 		display: flex;
 		flex-direction: column;
-		gap: var(--spacing-4);
-	}
-
-	.featured-meta {
-		display: flex;
 		align-items: center;
-		flex-wrap: wrap;
-		column-gap: var(--spacing-3);
-		row-gap: var(--spacing-1);
-		font-size: var(--font-size-sm);
-		color: var(--color-muted);
+		gap: var(--spacing-8);
 	}
 
-	.meta-dot {
-		width: 3px;
-		height: 3px;
-		border-radius: 50%;
-		background: var(--color-muted);
-	}
-
-	/* Featured bylines */
-	.featured-bylines {
-		display: flex;
-		align-items: center;
-		gap: 2px;
-	}
-
-	.featured-byline {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--spacing-2);
-	}
-
-	.featured-byline-avatar {
-		width: var(--avatar-size-md);
-		height: var(--avatar-size-md);
-		border-radius: 50%;
-		object-fit: cover;
-	}
-
-	.featured-byline-name {
-		font-weight: 500;
-		color: var(--color-text-secondary);
-	}
-
-	.byline-sep {
-		color: var(--color-muted);
-		margin-right: 2px;
-	}
-
-	.byline-more {
-		font-size: var(--font-size-xs);
-		color: var(--color-muted);
-		margin-left: 2px;
-	}
-
-	.featured-title-link {
-		text-decoration: none;
-		color: inherit;
-	}
-
-	.featured-title {
-		font-size: clamp(var(--font-size-2xl), 4vw, var(--font-size-4xl));
+	.hero-title {
+		font-size: clamp(var(--font-size-3xl), 6vw, var(--font-size-5xl));
 		font-weight: 700;
 		line-height: var(--leading-tight);
 		letter-spacing: var(--tracking-tight);
-		transition: color var(--transition-fast);
-	}
-
-	.featured-title-link:hover .featured-title,
-	.featured-grid:has(.featured-image-link:hover) .featured-title {
-		color: var(--color-accent);
-	}
-
-	.featured-excerpt {
-		font-size: var(--font-size-lg);
-		line-height: var(--leading-relaxed);
-		color: var(--color-text-secondary);
-	}
-
-	.featured-tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--spacing-2);
-		margin-top: var(--spacing-2);
-	}
-
-	.featured-tag {
-		display: inline-block;
-		padding: var(--spacing-1) var(--spacing-3);
-		font-size: var(--font-size-sm);
-		color: var(--color-text-secondary);
-		background: var(--color-surface);
-		border-radius: var(--radius);
-		text-decoration: none;
-		transition:
-			color var(--transition-fast),
-			background var(--transition-fast);
-	}
-
-	.featured-tag:hover {
 		color: var(--color-text);
-		background: var(--color-border);
 	}
 
-	/* Section header */
-	.section-header {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		margin-bottom: var(--spacing-8);
-		padding-bottom: var(--spacing-4);
-		border-bottom: 1px solid var(--color-border-subtle);
-	}
-
-	.section-title {
-		font-size: var(--font-size-sm);
-		font-weight: 500;
-		text-transform: uppercase;
-		letter-spacing: var(--tracking-wider);
-		color: var(--color-muted);
-	}
-
-	.section-link {
-		font-size: var(--font-size-sm);
-		color: var(--color-accent);
+	.hero-cta {
+		display: inline-block;
+		padding: var(--spacing-4) var(--spacing-8);
+		background: var(--color-accent);
+		color: var(--color-on-accent);
 		text-decoration: none;
-		transition: color var(--transition-fast);
+		border-radius: var(--radius);
+		font-size: var(--font-size-base);
+		font-weight: 500;
+		transition: background var(--transition-fast);
 	}
 
-	.section-link:hover {
-		color: var(--color-accent-hover);
+	.hero-cta:hover {
+		background: var(--color-accent-hover);
+		color: var(--color-on-accent);
 	}
 
-	/* Posts Grid */
-	.posts-section {
+	/* ── Products Grid ── */
+	.products-section {
+		padding: var(--spacing-16) var(--spacing-6);
 	}
 
-	.posts-grid {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: var(--spacing-12) var(--spacing-8);
-	}
-
-	/* Empty State */
-	.empty-state {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: var(--spacing-3);
-		text-align: center;
-		padding: var(--spacing-20) var(--spacing-6);
-		max-width: 400px;
+	.products-inner {
+		max-width: var(--wide-width);
 		margin: 0 auto;
 	}
 
-	.empty-state h2 {
-		font-size: var(--font-size-2xl);
-		font-weight: 600;
+	.products-grid {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: var(--spacing-6);
 	}
 
-	.empty-state p {
+	.empty-state {
+		text-align: center;
+		padding: var(--spacing-16) 0;
 		color: var(--color-muted);
 	}
 
@@ -399,50 +210,249 @@ function formatDate(date: Date | null | undefined) {
 		border-radius: var(--radius);
 		font-size: var(--font-size-sm);
 		font-weight: 500;
-		transition: background var(--transition-fast);
 	}
 
-	.btn:hover {
-		background: var(--color-accent-hover);
+	/* ── Feature Blurbs ── */
+	.features-section {
+		background: var(--color-bg-subtle);
+		border-top: 1px solid var(--color-border-subtle);
+		border-bottom: 1px solid var(--color-border-subtle);
+		padding: var(--spacing-16) var(--spacing-6);
 	}
 
-	/* Responsive */
+	.features-inner {
+		max-width: var(--wide-width);
+		margin: 0 auto;
+		display: grid;
+		grid-template-columns: 1fr 2fr;
+		gap: var(--spacing-12);
+		align-items: center;
+	}
+
+	.features-image img {
+		width: 100%;
+		height: 400px;
+		object-fit: cover;
+		border-radius: var(--radius-lg);
+	}
+
+	.features-text {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--spacing-8);
+	}
+
+	.feature-title {
+		font-size: var(--font-size-lg);
+		font-weight: 600;
+		margin-bottom: var(--spacing-3);
+	}
+
+	.feature p {
+		font-size: var(--font-size-sm);
+		color: var(--color-text-secondary);
+		line-height: var(--leading-relaxed);
+	}
+
+	/* ── Info Bar ── */
+	.info-section {
+		padding: var(--spacing-12) var(--spacing-6);
+	}
+
+	.info-inner {
+		max-width: var(--wide-width);
+		margin: 0 auto;
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: var(--spacing-8);
+		align-items: start;
+	}
+
+	.info-address h4,
+	.info-hours h4 {
+		font-size: var(--font-size-sm);
+		font-weight: 600;
+		text-transform: uppercase;
+		letter-spacing: var(--tracking-wide);
+		margin-bottom: var(--spacing-3);
+		color: var(--color-muted);
+	}
+
+	.info-address p,
+	.info-hours p {
+		font-size: var(--font-size-sm);
+		color: var(--color-text-secondary);
+		line-height: var(--leading-relaxed);
+	}
+
+	.info-quote {
+		border-left: 3px solid var(--color-accent);
+		padding-left: var(--spacing-6);
+		margin: 0;
+	}
+
+	.info-quote p {
+		font-size: var(--font-size-xl);
+		font-style: italic;
+		color: var(--color-text-secondary);
+		line-height: var(--leading-relaxed);
+	}
+
+	/* ── Gallery ── */
+	.gallery-section {
+		background: var(--color-bg-subtle);
+		border-top: 1px solid var(--color-border-subtle);
+		border-bottom: 1px solid var(--color-border-subtle);
+		padding: var(--spacing-6) 0;
+	}
+
+	.gallery-grid {
+		display: grid;
+		grid-template-columns: repeat(6, 1fr);
+	}
+
+	.gallery-item {
+		aspect-ratio: 1;
+		overflow: hidden;
+	}
+
+	.gallery-item img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.4s ease;
+	}
+
+	.gallery-item:hover img {
+		transform: scale(1.05);
+	}
+
+	/* ── Spotlight ── */
+	.spotlight-section {
+		padding: var(--spacing-16) var(--spacing-6);
+	}
+
+	.spotlight-inner {
+		max-width: var(--wide-width);
+		margin: 0 auto;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: var(--spacing-12);
+		align-items: center;
+	}
+
+	.spotlight-image img {
+		width: 100%;
+		aspect-ratio: 1;
+		object-fit: cover;
+		border-radius: var(--radius-lg);
+	}
+
+	.spotlight-content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-4);
+	}
+
+	.spotlight-title {
+		font-size: var(--font-size-3xl);
+		font-weight: 700;
+		line-height: var(--leading-tight);
+	}
+
+	.spotlight-description {
+		color: var(--color-text-secondary);
+		line-height: var(--leading-relaxed);
+	}
+
+	.spotlight-price {
+		font-size: var(--font-size-2xl);
+		font-weight: 600;
+	}
+
+	.spotlight-cta {
+		display: inline-block;
+		align-self: flex-start;
+		padding: var(--spacing-3) var(--spacing-8);
+		border: 2px solid var(--color-text);
+		color: var(--color-text);
+		text-decoration: none;
+		border-radius: var(--radius);
+		font-size: var(--font-size-sm);
+		font-weight: 500;
+		transition:
+			background var(--transition-fast),
+			color var(--transition-fast);
+	}
+
+	.spotlight-cta:hover {
+		background: var(--color-text);
+		color: var(--color-bg);
+	}
+
+	/* ── Responsive ── */
+	@media (max-width: 1100px) {
+		.products-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+	}
+
 	@media (max-width: 900px) {
-		.home-content {
-			padding: var(--spacing-6) var(--spacing-4) var(--spacing-12);
+		.features-inner {
+			grid-template-columns: 1fr;
 		}
 
-		.featured-image-link {
-			margin-left: 0;
-		}
-
-		.featured-grid {
+		.features-text {
 			grid-template-columns: 1fr;
 			gap: var(--spacing-6);
 		}
 
-		.featured-image {
-			border-radius: var(--radius-lg);
+		.features-image img {
+			height: 260px;
 		}
 
-		.featured-image img {
-			aspect-ratio: 16 / 9;
+		.info-inner {
+			grid-template-columns: 1fr 1fr;
 		}
 
-		.posts-grid {
+		.info-quote {
+			grid-column: span 2;
+		}
+
+		.products-grid {
 			grid-template-columns: repeat(2, 1fr);
-			gap: var(--spacing-8) var(--spacing-6);
+		}
+
+		.gallery-grid {
+			grid-template-columns: repeat(3, 1fr);
+		}
+
+		.spotlight-inner {
+			grid-template-columns: 1fr;
+			gap: var(--spacing-8);
 		}
 	}
 
 	@media (max-width: 600px) {
-		.featured-title {
-			font-size: var(--font-size-2xl);
+		.hero {
+			padding: var(--spacing-16) var(--spacing-4);
 		}
 
-		.posts-grid {
+		.products-grid {
+			grid-template-columns: repeat(2, 1fr);
+			gap: var(--spacing-4);
+		}
+
+		.info-inner {
 			grid-template-columns: 1fr;
-			gap: var(--spacing-8);
+		}
+
+		.info-quote {
+			grid-column: span 1;
+		}
+
+		.gallery-grid {
+			grid-template-columns: repeat(2, 1fr);
 		}
 	}
 </style>
